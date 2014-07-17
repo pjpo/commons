@@ -8,7 +8,7 @@ public class WriterToReader extends Writer implements AutoCloseable {
 
 	private final StringBuffer buffer = new StringBuffer();
 	
-	private final Reader reader = new WriterReader();
+	private final Reader reader;
 	
 	private static int MAX_BUFFER = 2048;
 	
@@ -16,10 +16,12 @@ public class WriterToReader extends Writer implements AutoCloseable {
 	
 	public WriterToReader() {
 		super();
+		reader = new WriterReader(lock);
 	}
 
 	public WriterToReader(Object lock) {
 		super(lock);
+		reader = new WriterReader(lock);
 	}
 
 	@Override
@@ -32,6 +34,9 @@ public class WriterToReader extends Writer implements AutoCloseable {
 			// ADDS THE CHARS TO BUFFER
 			buffer.append(cbuf, off, len);
 		
+			// NOTIFY THAT WE HAVE REMAINING LINES TO READ
+			lock.notifyAll();
+
 			// WAIT UNTIL SIZE OF CHARS LESS THAN MAX_BUFFER
 			waitUntil(MAX_BUFFER);
 		}
@@ -57,6 +62,7 @@ public class WriterToReader extends Writer implements AutoCloseable {
 	public void close() throws IOException {
 		synchronized(lock) {
 			closed = true;
+			lock.notifyAll();
 		}
 	}
 
@@ -75,7 +81,11 @@ public class WriterToReader extends Writer implements AutoCloseable {
 	}
 	
 	private class WriterReader extends Reader implements AutoCloseable {
-
+		
+		public WriterReader(Object lock) {
+			super(lock);
+		}
+		
 		public int read(char[] cbuf, int off, int len) throws IOException {
 			synchronized(lock) {
 				// WAIT WHILE SOME CHARS STAY TO READ IF STREAM IS NOT CLOSED
@@ -94,6 +104,8 @@ public class WriterToReader extends Writer implements AutoCloseable {
 					int copiedBuffer = len > buffer.length() ? buffer.length() : len;
 					buffer.getChars(0, copiedBuffer, cbuf, off);
 					buffer.delete(0, copiedBuffer);
+					// NOTIFY THAT WE HAVE REMOVED SOME CHARACTERS
+					lock.notifyAll();
 					return copiedBuffer;
 				} else {
 					// THE STREAM HAS BEEN CLOSED
@@ -108,6 +120,7 @@ public class WriterToReader extends Writer implements AutoCloseable {
 				// FLUSHES THE BUFFER AND CLOSES THE STREAM
 				buffer.delete(0, buffer.length());
 				closed = true;
+				lock.notifyAll();
 			}
 		}
 		
