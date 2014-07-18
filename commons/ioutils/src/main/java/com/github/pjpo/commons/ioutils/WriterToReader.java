@@ -72,7 +72,9 @@ public class WriterToReader extends Writer implements AutoCloseable {
 				// NOTIFY THAT WE HAVE REMAINING LINES TO READ
 				lock.notifyAll();
 				try {
-					lock.wait();
+					lock.wait(1000);
+					if (Thread.interrupted())
+						throw new InterruptedException();
 				} catch (InterruptedException e) {
 					throw new IOException(e);
 				}
@@ -93,7 +95,9 @@ public class WriterToReader extends Writer implements AutoCloseable {
 					// NOTIFY THAT WE WANT MORE LINES
 					lock.notifyAll();
 					try {
-						lock.wait();
+						lock.wait(1000);
+						if (Thread.interrupted())
+							throw new InterruptedException();
 					} catch (InterruptedException e) {
 						throw new IOException(e);
 					}
