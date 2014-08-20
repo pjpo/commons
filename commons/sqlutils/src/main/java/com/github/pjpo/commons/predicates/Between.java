@@ -1,18 +1,29 @@
 package com.github.pjpo.commons.predicates;
 
-public class Between<T extends Comparable<? super T>> implements Filter {
+public class Between<T extends Comparable<T>> implements Filter {
+
+	public static enum BoundaryType {
+		INCLUDED, EXCLUDED;
+	}
 
 	private final String property;
 	
-	private final Boundary<T> start;
+	private final BoundaryType startBoundary;
 	
-	private final Boundary<T> end;
+	private final T start;
+	
+	private final BoundaryType endBoundary;
+
+	private final T end;
 	
 	private final Class<T> clazz;
 
-	public Between(final String property, final Class<T> clazz, final Boundary<T> start, final Boundary<T> end) {
+	public Between(String property, Class<T> clazz, BoundaryType startBoundary,
+			T start, BoundaryType endBoundary, T end) {
 		this.property = property;
+		this.startBoundary = startBoundary;
 		this.start = start;
+		this.endBoundary = endBoundary;
 		this.end = end;
 		this.clazz = clazz;
 	}
@@ -21,16 +32,25 @@ public class Between<T extends Comparable<? super T>> implements Filter {
 		return property;
 	}
 
-	public Boundary<T> getStart() {
+	public BoundaryType getStartBoundary() {
+		return startBoundary;
+	}
+
+	public T getStart() {
 		return start;
 	}
 
-	public Boundary<T> getEnd() {
+	public BoundaryType getEndBoundary() {
+		return endBoundary;
+	}
+
+	public T getEnd() {
 		return end;
 	}
 
 	public Class<T> getClazz() {
 		return clazz;
 	}
+
 	
 }

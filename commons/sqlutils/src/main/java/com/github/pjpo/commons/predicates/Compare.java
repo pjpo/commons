@@ -1,6 +1,6 @@
 package com.github.pjpo.commons.predicates;
 
-public class Compare<T extends Comparable<? super T>> implements Filter {
+public class Compare<T extends Comparable<T>> implements Filter {
 
 	public static enum Type {
 		EQUAL, GREATER, LESS, GREATER_OR_EQUAL, LESS_OR_EQUAL;
