@@ -1,4 +1,4 @@
-package com.github.pjpo.commons.sqlutils.predicates;
+package com.github.pjpo.commons.predicates;
 
 import java.util.Arrays;
 import java.util.Collection;
