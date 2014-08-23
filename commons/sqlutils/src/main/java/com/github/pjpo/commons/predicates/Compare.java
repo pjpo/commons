@@ -11,15 +11,12 @@ public class Compare<T extends Comparable<T>> implements Filter {
 	private final T value;
 	 
 	private final Type type;
-
-	private final Class<T> clazz;
 	
-	public Compare(final String property, final Class<T> clazz,
+	public Compare(final String property,
 			final T value, final Type type) {
 		this.property = property;
 		this.value = value;
 		this.type = type;
-		this.clazz = clazz;
 	}
 
 	public String getProperty() {
@@ -34,8 +31,4 @@ public class Compare<T extends Comparable<T>> implements Filter {
 		return type;
 	}
 
-	public Class<T> getClazz() {
-		return clazz;
-	}
-	 
 }

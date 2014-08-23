@@ -16,16 +16,13 @@ public class Between<T extends Comparable<T>> implements Filter {
 
 	private final T end;
 	
-	private final Class<T> clazz;
-
-	public Between(String property, Class<T> clazz, BoundaryType startBoundary,
+	public Between(String property, BoundaryType startBoundary,
 			T start, BoundaryType endBoundary, T end) {
 		this.property = property;
 		this.startBoundary = startBoundary;
 		this.start = start;
 		this.endBoundary = endBoundary;
 		this.end = end;
-		this.clazz = clazz;
 	}
 
 	public String getProperty() {
@@ -47,10 +44,5 @@ public class Between<T extends Comparable<T>> implements Filter {
 	public T getEnd() {
 		return end;
 	}
-
-	public Class<T> getClazz() {
-		return clazz;
-	}
-
 	
 }
